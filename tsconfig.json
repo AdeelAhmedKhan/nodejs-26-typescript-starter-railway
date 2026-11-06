@@ -1,0 +1,1 @@
+{"compilerOptions":{"module":"NodeNext","moduleResolution":"NodeNext","outDir":"dist","rootDir":"src","skipLibCheck":true,"sourceMap":true,"strict":true,"target":"ES2023","types":["node"]},"include":["src"]}

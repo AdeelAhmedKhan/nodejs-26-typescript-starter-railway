@@ -1,0 +1,1 @@
+{"category":"Starters","description":"Minimal Node.js 26 LTS + TypeScript service, ready to deploy","name":"Node.js 26 TypeScript Starter","services":[{"build":{"builder":"NIXPACKS"},"healthcheckPath":"/health","name":"app","networking":{"public":true},"variables":[]}],"sourceBranch":"main","sourceRepo":"https://github.com/AdeelAhmedKhan/nodejs-26-typescript-starter-railway"}
