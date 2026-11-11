@@ -4,7 +4,7 @@
 
 - Pin every version exactly in `package.json` and `.node-version`.
   No caret ranges, no `latest`, no `-next` pre-release versions.
-- Node 26.13.0 (LTS "Lithium"), TypeScript 7.0.2, @types/node
+- Node 26.13.1 (LTS "Lithium"), TypeScript 7.0.2, @types/node
   26.6.6, tsx 4.23.15. The local parity test ran against exactly
   these versions.
 - Node.js ships security releases for 22.x, 24.x and 26.x on or

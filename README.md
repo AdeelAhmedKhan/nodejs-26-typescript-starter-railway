@@ -14,7 +14,7 @@ A one line program that prints a port and exits is not a service. A container th
 
 ## Versions (pinned exactly)
 
-- Node.js **26.13.0** (LTS "Lithium", latest 26.x as of 2026-11-06; `.node-version` plus `engines: 26.x`)
+- Node.js **26.13.1** (LTS "Lithium", latest 26.x as of 2026-11-11; `.node-version` plus `engines: 26.x`)
 - TypeScript **7.0.2**
 - @types/node **26.6.6**
 - tsx **4.23.15**
@@ -60,7 +60,7 @@ Then open `http://localhost:8080/` and `http://localhost:8080/health`.
 
 ## Verified locally
 
-Verified locally on 2026-11-06 with Node 26.13.0: `npm install` clean, `npx tsc --noEmit` 0 errors, `npm run build` succeeds, and the built server answers `GET /` 200, `GET /health` 200, `GET /echo?message=hi` 200, `GET /echo` 400, and exits 0 on `SIGTERM`. See `docs/local-test-2026-11-06.md` for the full evidence.
+Verified locally on 2026-11-11 with Node 26.13.1: `npm install` clean, `npx tsc --noEmit` 0 errors, `npm run build` succeeds, and the built server answers `GET /` 200, `GET /health` 200, `GET /echo?message=hi` 200, `GET /echo` 400, and exits 0 on `SIGTERM`. See `docs/local-test-2026-11-11.md` for the full evidence.
 
 ## Still untested
 
