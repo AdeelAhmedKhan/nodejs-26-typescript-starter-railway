@@ -62,8 +62,17 @@ Then open `http://localhost:8080/` and `http://localhost:8080/health`.
 
 Verified locally on 2026-11-11 with Node 26.13.1: `npm install` clean, `npx tsc --noEmit` 0 errors, `npm run build` succeeds, and the built server answers `GET /` 200, `GET /health` 200, `GET /echo?message=hi` 200, `GET /echo` 400, and exits 0 on `SIGTERM`. See `docs/local-test-2026-11-11.md` for the full evidence.
 
+## Verified live on Railway 2026-11-20
+
+A fresh deploy of this template on Railway (Hobby plan) passed
+on the first attempt: Railpack build on Node 26.13.1, healthcheck
+passed, `GET /` 200, `GET /health` returned `{"status":"ok"}`,
+`GET /echo?message=hi` echoed the message, and `GET /echo`
+without the parameter returned 400 with the designed error body.
+The test project was deleted right after verification (cost:
+$0.0001).
+
 ## Still untested
 
-- A live Railway deploy has NOT happened yet.
-- There is no Dockerfile in this template, so there is no Docker image build to test; the Railway Nixpacks build is untested.
-- First-day cost on Railway is untested.
+- Running cost over a full day (a short test deploy cost
+  $0.0001; a full day has not been measured).
