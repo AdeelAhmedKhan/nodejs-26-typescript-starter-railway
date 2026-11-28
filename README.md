@@ -10,11 +10,11 @@ A one line program that prints a port and exits is not a service. A container th
 - `GET /health` answers `{"status":"ok"}` plus uptime, wired as the Railway healthcheck.
 - Graceful shutdown on `SIGTERM` and `SIGINT`: in-flight requests finish before the process exits. Railway sends `SIGTERM` before replacing a container; without a handler, in-flight requests are cut off on every deploy.
 - Zero required environment variables. One service, no database, no volume.
-- No Dockerfile. Railway Nixpacks auto-detects Node from `.node-version` and `package.json`.
+- Deploys from a Dockerfile on the official `node` image, floating tag `node:26`, so new 26.x patches are picked up automatically (Ahmed's call, 2026-11-28). `node:26` and `node:26-trixie` are the same image today (Debian 13, trixie); the bare tag follows the Node team's default Debian if that ever moves.
 
 ## Versions (pinned exactly)
 
-- Node.js **26.13.1** (LTS "Lithium", latest 26.x as of 2026-11-11; `.node-version` plus `engines: 26.x`)
+- Node.js **26.13.1** (LTS "Lithium", latest 26.x as of 2026-11-11; `.node-version` plus `engines: 26.x`). The Docker base image floats on `node:26` (Ahmed's call, 2026-11-28), so deploys pick up new 26.x patches automatically; `.node-version` records the version the code was last tested against.
 - TypeScript **7.0.2**
 - @types/node **26.6.6**
 - tsx **4.23.15**
@@ -29,7 +29,7 @@ This template deploys as one separate standalone service, so you can switch or u
 2. Move your code into the new service and test it on the generated Railway domain.
 3. When it is green, point your domain at the new service and remove the old one.
 
-Upgrading Node later is the same shape: the version lives in one place, `.node-version` (plus `engines` in `package.json`). Bump the pin, redeploy, and the service comes up on the new version with the same healthcheck and shutdown behaviour. No reconfiguration, no extra services to wire.
+Upgrading Node later is the same shape: the runtime lives in the Dockerfile (`FROM node:26`, floating). A new 26.x patch is picked up automatically on the next deploy; to pin a specific patch instead, change the FROM line to `node:26.x.y`. The service comes up on the new version with the same healthcheck and shutdown behaviour. No reconfiguration, no extra services to wire.
 
 ## Endpoints
 

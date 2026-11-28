@@ -6,7 +6,10 @@
   No caret ranges, no `latest`, no `-next` pre-release versions.
 - Node 26.13.1 (LTS "Lithium"), TypeScript 7.0.2, @types/node
   26.6.6, tsx 4.23.15. The local parity test ran against exactly
-  these versions.
+  these versions. The Docker base image floats on `node:26`
+  (Ahmed's call, 2026-11-28), so deploys pick up new 26.x patches
+  automatically; `.node-version` records the version the code was
+  last tested against, not the version a deploy runs.
 - Node.js ships security releases for 22.x, 24.x and 26.x on or
   shortly after Wed 11 Nov 2026. When the new 26.x patch lands,
   bump `.node-version` (and the README) to it and re-run the full
@@ -14,8 +17,10 @@
 
 ## Shape (never regress)
 
-- NO Dockerfile. Railway Nixpacks auto-detects Node. One service,
-  no database, no volume, zero required env vars.
+- Dockerfile on the official `node` image, floating tag `node:26`
+  (Ahmed's call, 2026-11-28; supersedes the earlier no-Dockerfile
+  Nixpacks shape). One service, no database, no volume, zero
+  required env vars.
 - Version pinning lives in `.node-version` (exact) and the
   `package.json` engines field (`26.x`).
 - `railway.json` carries the healthcheck (`/health`) and the
