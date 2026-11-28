@@ -79,8 +79,13 @@ The test project was deleted right after verification (cost:
 $0.0001).
 
 That live test was the old plain `node:http` API version. The
-Express + static conversion (2026-11-28) needs a fresh live test,
-which runs after the conversion is pushed.
+converted Express + static app was live-tested on 2026-11-28:
+a fresh deploy from the template page (commit 41e69ca, "Convert
+to Express + static landing page") returned the landing page at
+`GET /` (200), `GET /health` returned `{"status":"ok"}`, `GET
+/echo?message=hi` echoed the message, and `GET /echo` without
+a parameter returned 400. The test project was deleted right
+after verification.
 
 ## Still untested
 
