@@ -14,6 +14,7 @@ RUN npm ci
 # Build the TypeScript app.
 COPY tsconfig.json ./
 COPY src ./src
+COPY public ./public
 RUN npm run build
 
 # The app reads PORT (default 8080) and binds 0.0.0.0.

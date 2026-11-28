@@ -1,75 +1,47 @@
-import http from "node:http";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const PORT = Number(process.env.PORT ?? 8080);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const server = http.createServer((req, res) => {
-  try {
-    const url = new URL(req.url ?? "/", `http://localhost:${PORT}`);
+const app = express();
+app.use(express.json());
 
-    if (req.method === "GET" && url.pathname === "/") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          name: "Node.js 26 TypeScript Starter",
-          endpoints: [
-            { method: "GET", path: "/", description: "List the endpoints" },
-            {
-              method: "GET",
-              path: "/health",
-              description: "Service health and uptime",
-            },
-            {
-              method: "GET",
-              path: "/echo?message=hi",
-              description: "Echo the message query parameter",
-            },
-          ],
-        }),
-      );
-      return;
-    }
+// Serve the landing page and static files from public/.
+// The built app runs from dist/, so public/ sits one level up.
+app.use(express.static(path.join(__dirname, "..", "public")));
 
-    if (req.method === "GET" && url.pathname === "/health") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          status: "ok",
-          uptimeSeconds: Math.floor(process.uptime()),
-        }),
-      );
-      return;
-    }
-
-    if (req.method === "GET" && url.pathname === "/echo") {
-      const message = url.searchParams.get("message");
-      if (message === null || message === "") {
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Missing required query parameter: message",
-          }),
-        );
-        return;
-      }
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ message }));
-      return;
-    }
-
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Not found" }));
-  } catch (err) {
-    console.error(err);
-    if (res.headersSent) {
-      res.end();
-      return;
-    }
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Internal server error" }));
-  }
+app.get("/health", (_req: Request, res: Response) => {
+  res.json({
+    status: "ok",
+    uptimeSeconds: Math.floor(process.uptime()),
+  });
 });
 
-server.listen(PORT, "0.0.0.0", () => {
+app.get("/echo", (req: Request, res: Response) => {
+  const message = req.query.message;
+  if (typeof message !== "string" || message === "") {
+    res.status(400).json({ error: "Missing required query parameter: message" });
+    return;
+  }
+  res.json({ message });
+});
+
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Not found" });
+});
+
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err);
+  res.status(500).json({ error: "Internal server error" });
+});
+
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Listening on port ${PORT}`);
 });
 

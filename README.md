@@ -4,13 +4,14 @@
 
 One-click deploy. A minimal web application on the latest Node.js 26 LTS, with fast deploys from the official Node image.
 
-A minimal HTTP service on Node.js 26 LTS and TypeScript 7 — no framework, but a service that stays up.
+A minimal web application on Node.js 26 LTS, Express 5, and TypeScript 7. It serves a landing page from `public/` plus a small JSON API, and shuts down cleanly, which is the smallest thing that deserves to be called a service.
 
 ## Why this exists
 
 A one line program that prints a port and exits is not a service. A container that exits is a container the platform marks as stopped: there is nothing to route a domain to and nothing to health check. This starter listens, answers, and shuts down cleanly, which is the smallest thing that deserves to be called a service.
 
 - Binds `PORT` (Railway injects it) on `0.0.0.0`, default `8080` locally.
+- Serves a landing page from `public/` at `GET /`, so a fresh deploy shows a real page, not just JSON. Edit `public/index.html` to make it yours.
 - `GET /health` answers `{"status":"ok"}` plus uptime, wired as the Railway healthcheck.
 - Graceful shutdown on `SIGTERM` and `SIGINT`: in-flight requests finish before the process exits. Railway sends `SIGTERM` before replacing a container; without a handler, in-flight requests are cut off on every deploy.
 - Zero required environment variables. One service, no database, no volume.
@@ -19,8 +20,9 @@ A one line program that prints a port and exits is not a service. A container th
 ## Versions (pinned exactly)
 
 - Node.js **26.13.1** (LTS "Lithium", latest 26.x as of 2026-11-11; `.node-version` plus `engines: 26.x`). The Docker base image floats on `node:26` (Ahmed's call, 2026-11-28), so deploys pick up new 26.x patches automatically; `.node-version` records the version the code was last tested against.
+- Express **5.3.0**
 - TypeScript **7.0.2**
-- @types/node **26.6.6**
+- @types/node **26.6.6**, @types/express **5.0.6**
 - tsx **4.23.15**
 
 Node.js ships security releases for the 22.x, 24.x and 26.x lines on or shortly after Wednesday 11 November 2026. Expect the Node pin to move to the new 26.x patch after that date.
@@ -39,7 +41,7 @@ Upgrading Node later is the same shape: the runtime lives in the Dockerfile (`FR
 
 | Method | Path | Does |
 | ------ | ---- | ---- |
-| GET | `/` | Lists the endpoints |
+| GET | `/` | Serves the landing page from `public/index.html` |
 | GET | `/health` | `{"status":"ok"}` plus `uptimeSeconds` |
 | GET | `/echo?message=hi` | Echoes the `message` parameter, 400 when it is missing |
 
@@ -64,7 +66,7 @@ Then open `http://localhost:8080/` and `http://localhost:8080/health`.
 
 ## Verified locally
 
-Verified locally on 2026-11-11 with Node 26.13.1: `npm install` clean, `npx tsc --noEmit` 0 errors, `npm run build` succeeds, and the built server answers `GET /` 200, `GET /health` 200, `GET /echo?message=hi` 200, `GET /echo` 400, and exits 0 on `SIGTERM`. See `docs/local-test-2026-11-11.md` for the full evidence.
+Verified locally on 2026-11-28 after the Express + static conversion: `npm install` clean, `npx tsc --noEmit` 0 errors, `npm run build` succeeds, and the built server answers `GET /` 200 (landing page HTML), `GET /health` 200, `GET /echo?message=hi` 200, `GET /echo` 400, and exits 0 on `SIGTERM`. See `docs/local-test-2026-11-28.md` for the full evidence. The local run used the VM's Node 24.22.1; the Dockerfile runs the official `node:26` image, and the live Railway test is the check on the real Node 26 runtime.
 
 ## Verified live on Railway 2026-11-20
 
@@ -75,6 +77,10 @@ passed, `GET /` 200, `GET /health` returned `{"status":"ok"}`,
 without the parameter returned 400 with the designed error body.
 The test project was deleted right after verification (cost:
 $0.0001).
+
+That live test was the old plain `node:http` API version. The
+Express + static conversion (2026-11-28) needs a fresh live test,
+which runs after the conversion is pushed.
 
 ## Still untested
 
