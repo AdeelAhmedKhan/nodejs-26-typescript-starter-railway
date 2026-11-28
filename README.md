@@ -1,5 +1,7 @@
 # Node.js 26 TypeScript Starter
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/nodejs-26-typescript-starter)
+
 A minimal HTTP service on Node.js 26 LTS and TypeScript 7 — no framework, but a service that stays up.
 
 ## Why this exists
